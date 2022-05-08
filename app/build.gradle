@@ -40,6 +40,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //arcore latest version error
     implementation 'com.google.ar:core:1.30.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 }
 
 apply plugin: 'com.google.ar.sceneform.plugin'

@@ -29,9 +29,15 @@ import java.io.IOException
 
 open class ArVideoFragment : ArFragment() {
 
+    //is used to play the specific video
     private lateinit var mediaPlayer: MediaPlayer
+
+    //add texture on the plane
     private lateinit var externalTexture: ExternalTexture
+
     private lateinit var videoRenderable: ModelRenderable
+
+
     private lateinit var videoAnchorNode: VideoAnchorNode
 
     private var activeAugmentedImage: AugmentedImage? = null
@@ -44,12 +50,17 @@ open class ArVideoFragment : ArFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = super.onCreateView(inflater, container, savedInstanceState)
 
+        // to have a hand gesture
         planeDiscoveryController.hide()
         planeDiscoveryController.setInstructionView(null)
+
         arSceneView.planeRenderer.isEnabled = false
+
         arSceneView.isLightEstimationEnabled = false
 
+        //arcore method
         initializeSession()
+
         createArScene()
 
         return view
@@ -87,7 +98,9 @@ open class ArVideoFragment : ArFragment() {
     }
 
     private fun createArScene() {
-        // Create an ExternalTexture for displaying the contents of the video.
+
+
+        // sets the media player on the texture.
         externalTexture = ExternalTexture().also {
             mediaPlayer.setSurface(it.surface)
         }
@@ -124,7 +137,7 @@ open class ArVideoFragment : ArFragment() {
 
         val updatedAugmentedImages = frame.getUpdatedTrackables(AugmentedImage::class.java)
 
-        // If current active augmented image isn't tracked anymore and video playback is started - pause video playback
+        //pause the video if not tracking the image.
         val nonFullTrackingImages = updatedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }
         activeAugmentedImage?.let { activeAugmentedImage ->
             if (isArVideoPlaying() && nonFullTrackingImages.any { it.index == activeAugmentedImage.index }) {
@@ -135,7 +148,7 @@ open class ArVideoFragment : ArFragment() {
         val fullTrackingImages = updatedAugmentedImages.filter { it.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING }
         if (fullTrackingImages.isEmpty()) return
 
-        // If current active augmented image is tracked but video playback is paused - resume video playback
+        // if current active augmented image is tracked but video playback is paused - resume video playback
         activeAugmentedImage?.let { activeAugmentedImage ->
             if (fullTrackingImages.any { it.index == activeAugmentedImage.index }) {
                 if (!isArVideoPlaying()) {
@@ -164,6 +177,7 @@ open class ArVideoFragment : ArFragment() {
 
     private fun resumeArVideo() {
         mediaPlayer.start()
+        //fade to have good effect.
         fadeInVideo()
     }
 
@@ -209,7 +223,9 @@ open class ArVideoFragment : ArFragment() {
                     videoScaleType = videoScaleType
                 )
 
-                // Update the material parameters
+
+                //render params
+
                 videoRenderable.material.setFloat2(MATERIAL_IMAGE_SIZE, imageSize.width(), imageSize.height())
                 videoRenderable.material.setFloat2(MATERIAL_VIDEO_SIZE, videoWidth, videoHeight)
                 videoRenderable.material.setBoolean(MATERIAL_VIDEO_CROP, VIDEO_CROP_ENABLED)
