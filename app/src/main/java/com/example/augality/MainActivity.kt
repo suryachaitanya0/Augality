@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+//if it has only OpenGL its fragment containing ArVideo should be launched.
         if (openGlVersion.toDouble() >= MIN_OPEN_GL_VERSION) {
             supportFragmentManager.inTransaction { replace(R.id.fragmentContainer, ArVideoFragment()) }
         } else {
